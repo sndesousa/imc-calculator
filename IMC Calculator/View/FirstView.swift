@@ -17,6 +17,7 @@ class firstViewData: UIView {
         label.textAlignment = .center
         label.font = UIFont(name: "Arial Rounded MT Bold"  , size: 22)
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = UIColor.green
     
         return label
     }()
