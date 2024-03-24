@@ -8,9 +8,5 @@
 
 import Foundation
 
-func showSecondViewController() {
     
-}
-
-
 
