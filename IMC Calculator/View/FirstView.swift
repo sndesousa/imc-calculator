@@ -9,7 +9,10 @@
 import Foundation
 import UIKit
 
-class firstViewData: UIView {
+class FirstView: UIView {
+    
+    private var currentHeight: Double = 0.0//0.0 = valor por default para no hacerlo opcional
+    private var currentWeigth: Double = 0.0
     
     //TITLE view
     private let textLabel: UILabel = {
@@ -35,9 +38,10 @@ class firstViewData: UIView {
         return height
     }()
     
+    
     private let textLabelHeightNumber: UILabel = {
         let numberHeight = UILabel()
-        numberHeight.text = "1.5M"
+        numberHeight.text = "1.75"
         numberHeight.textAlignment = .center
         numberHeight.font = UIFont(name: "Arial Rounded MT Bold"  , size: 14)
         numberHeight.translatesAutoresizingMaskIntoConstraints = false
@@ -46,100 +50,157 @@ class firstViewData: UIView {
         return numberHeight
     }()
     
-
+    
     private let sliderHeight: UISlider = {
         let sliderH = UISlider(frame: CGRect(x: 50, y: 100, width: 300, height: 20))
         sliderH.minimumValue = 1.0
         sliderH.maximumValue = 2.5
-        sliderH.value = 1.25
+        sliderH.value = 1.75
         sliderH.isContinuous = true
         sliderH.tintColor = UIColor.blue
+        sliderH.addTarget(self, action: #selector(sliderHChange), for: .valueChanged)
         sliderH.translatesAutoresizingMaskIntoConstraints = false
         
         return sliderH
     }()
+    
+    
+    //Asingo el valor del Slider a un text (textLabelHeightNumber)
+    @objc func sliderHChange(sender: UISlider!){
+        textLabelHeightNumber.text = String(format: "%.2f", sender.value)//actualizando la UI
+        currentHeight = Double(sender.value)//guardas el valor actual indicado por el usuario
+    }
  
  
     //WIDTH views
-    private let textLabelWidth: UILabel = {
-        let width = UILabel()
-        width.text = "Width"
-        width.textAlignment = .center
-        width.font = UIFont(name: "Arial Rounded MT Bold"  , size: 14)
-        width.translatesAutoresizingMaskIntoConstraints = false
-        width.textColor = UIColor.black
+    private let textLabelWeight: UILabel = {
+        let weight = UILabel()
+        weight.text = "Width"
+        weight.textAlignment = .center
+        weight.font = UIFont(name: "Arial Rounded MT Bold"  , size: 14)
+        weight.translatesAutoresizingMaskIntoConstraints = false
+        weight.textColor = UIColor.black
         
-        return width
+        return weight
     }()
     
-    private let textLabelWidthNumber: UILabel = {
-        let numberWidth = UILabel()
-        numberWidth.text = "100"
-        numberWidth.textAlignment = .center
-        numberWidth.font = UIFont(name: "Arial Rounded MT Bold"  , size: 14)
-        numberWidth.translatesAutoresizingMaskIntoConstraints = false
-        numberWidth.textColor = UIColor.black
+    private let textLabelWeightNumber: UILabel = {
+        let numberWeight = UILabel()
+        numberWeight.text = "100"
+        numberWeight.textAlignment = .center
+        numberWeight.font = UIFont(name: "Arial Rounded MT Bold"  , size: 14)
+        numberWeight.translatesAutoresizingMaskIntoConstraints = false
+        numberWeight.textColor = UIColor.black
         
-        return numberWidth
+        return numberWeight
     }()
     
     
-    private let sliderWidth: UISlider = {
+    private let sliderWeight: UISlider = {
         let sliderW = UISlider(frame: CGRect(x: 50, y: 100, width: 300, height: 20))
         sliderW.minimumValue = 0
         sliderW.maximumValue = 200
         sliderW.value = 100
         sliderW.isContinuous = true
         sliderW.tintColor = UIColor.blue
+        sliderW.addTarget(self, action: #selector(sliderWChange), for: .valueChanged)
         sliderW.translatesAutoresizingMaskIntoConstraints = false
         
         return sliderW
     }()
     
+    //Asingo el valor del Slider a un text (textLabelWightNumber)
+    @objc func sliderWChange(sender: UISlider!){
+        textLabelWeightNumber.text = String(format: "%.2f", sender.value)
+        currentWeigth = Double(sender.value)//guardas el peso
+    }
+    
+    //Button "CALCULATE" view
+    // cambiar de pantalla y calcular lo que quiero calcular
     private let buttonCalculate: UIButton = {
         let calculate = UIButton()
         calculate.setTitle("CALCULATE", for: .normal)
         calculate.setTitleColor(.black , for: .normal)
         calculate.tintColor = .blue
+        calculate.addTarget(self, action: #selector(calculateButtonTapped), for: .touchUpInside)
         calculate.translatesAutoresizingMaskIntoConstraints = false
        
         return calculate
     }()
     
-  /*  @objc func sliderValueChanged(sender: UISlider) {
-        textLabelHeightNumber.text = String(format: "%.2f", sliderHe.value)
+    @objc private func calculateButtonTapped() {
+        /*guard let weightText = textLabelWeight.text, let heightText = textLabelHeight.text,
+            let weight = Double(weightText), let height = Double(heightText) else {
+               return
+        }*/
+        //calcular IMC
+        let imcCalculator = CalculateIMC(weight: currentWeigth, height: currentHeight)
+        
+        
+        //aca hace algo
+    }
+    /*
+        
+        
+        //instancio en una constante el modelo creado
+        let model = calculateIMC(weight: weight, height: height)
+        let result = secondViewData(imcCalculate: calculateIMC)
+        navigationController?.pushViewController(secondViewData, animated: true)
     }
     
+    
+    
+    
+     
+      {
+     guard let weightText = weightTextField.text, let heightText = heightTextField.text,
+     let weight = Double(weightText), let height = Double(heightText) else {
+     // Handle invalid input
+     return
+     }
+     
+     let bmiModel = BMIModel(weight: weight, height: height)
+     let resultViewController = ResultViewController(bmiModel: bmiModel)
+     navigationController?.pushViewController(resultViewController, animated: true)
+     }
+     }
+     
+    
     */
+    
+    
+    
     
     override init(frame: CGRect) {
         super.init(frame: .zero)
         setup()
     }
     
+    //Codigo necesario
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    //Creo funcion para tener un codigo mas limpio
     private func setup() {
         addSubviews()
         configureConstraints()
     }
     
-    
+    //Agrego las vistas
     private func addSubviews() {
         addSubview(textLabel)
         addSubview(sliderHeight)
         addSubview(textLabelHeight)
         addSubview(textLabelHeightNumber)
-        addSubview(sliderWidth)
-        addSubview(textLabelWidth)
-        addSubview(textLabelWidthNumber)
+        addSubview(sliderWeight)
+        addSubview(textLabelWeight)
+        addSubview(textLabelWeightNumber)
         addSubview(buttonCalculate)
 
         
     }
-    
+    //Configuracion de constraints
     private func configureConstraints() {
         NSLayoutConstraint.activate([
             textLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -159,30 +220,28 @@ class firstViewData: UIView {
             sliderHeight.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
             sliderHeight.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor),
             
-            textLabelWidth.centerXAnchor.constraint(equalTo: layoutMarginsGuide.leftAnchor, constant: 50),
-            textLabelWidth.centerYAnchor.constraint(equalTo: sliderHeight.bottomAnchor, constant: 50),
-            textLabelWidth.trailingAnchor.constraint(equalTo: trailingAnchor),
+            textLabelWeight.centerXAnchor.constraint(equalTo: layoutMarginsGuide.leftAnchor, constant: 50),
+            textLabelWeight.centerYAnchor.constraint(equalTo: sliderHeight.bottomAnchor, constant: 50),
+            textLabelWeight.trailingAnchor.constraint(equalTo: trailingAnchor),
             
-            textLabelWidthNumber.rightAnchor.constraint(equalTo: layoutMarginsGuide.rightAnchor, constant: -50),
-            textLabelWidthNumber.centerYAnchor.constraint(equalTo: sliderHeight.bottomAnchor, constant: 50),
+            textLabelWeightNumber.rightAnchor.constraint(equalTo: layoutMarginsGuide.rightAnchor, constant: -50),
+            textLabelWeightNumber.centerYAnchor.constraint(equalTo: sliderHeight.bottomAnchor, constant: 50),
             
-            sliderWidth.centerXAnchor.constraint(equalTo: centerXAnchor),
-            sliderWidth.centerYAnchor.constraint(equalTo: textLabelWidth.bottomAnchor, constant: 20),
-            sliderWidth.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
-            sliderWidth.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor),
+            sliderWeight.centerXAnchor.constraint(equalTo: centerXAnchor),
+            sliderWeight.centerYAnchor.constraint(equalTo: textLabelWeight.bottomAnchor, constant: 20),
+            sliderWeight.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
+            sliderWeight.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor),
             
             buttonCalculate.centerXAnchor.constraint(equalTo: centerXAnchor),
             buttonCalculate.centerYAnchor.constraint(equalTo: layoutMarginsGuide.bottomAnchor, constant: -20),
-            
-            
-            
-            
-            
-            
-            
             
             ])
     }
     
     
 }
+
+/*struct FirstViewData {
+    let weigth: Double
+    let heigth: Double
+}*/

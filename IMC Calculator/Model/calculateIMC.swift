@@ -8,5 +8,18 @@
 
 import Foundation
 
+
+//creo la estructura que necesito para realizar el calculo
+struct CalculateIMC {
     
+    var weight: Double
+    var height: Double
+    
+    
+    var imc: Double {
+        return weight / (height * height)
+    }
+    
+}
+
 
